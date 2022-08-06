@@ -15,10 +15,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fix locales
-        run: |
-          cp -f locales/locales/* locales/
-
       - name: Package and release
         uses: BigWigsMods/packager@v2
 
