@@ -1,0 +1,32 @@
+name: Sync fork
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # every 6 hours
+  workflow_dispatch: # manually
+
+env:
+  SRC_REPO: https://github.com/Tercioo/Details-Damage-Meter
+  SRC_BRANCH: master
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout everything
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Sync with upstream repo
+        run: |
+          git pull ${SRC_REPO} ${SRC_BRANCH} -r --tags
+
+      - name: Push changes
+        run: |
+          git push origin $(git rev-parse --abbrev-ref HEAD) --tags --force
